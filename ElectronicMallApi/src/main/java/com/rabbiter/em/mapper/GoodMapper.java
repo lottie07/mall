@@ -31,4 +31,7 @@ public interface GoodMapper extends BaseMapper<Good> {
 
     @Select("SELECT * FROM `good` WHERE is_delete = 0 ORDER BY sale_money DESC LIMIT 0,#{num}")
     List<Good> getSaleRank(int num);
+
+    @Select("SELECT * FROM `good` WHERE is_delete = 0 ORDER BY sale_money DESC LIMIT 0,#{num}")
+    List<Good> getHotGoods(int num);
 }

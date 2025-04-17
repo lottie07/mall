@@ -159,4 +159,7 @@ public class GoodService extends ServiceImpl<GoodMapper, Good> {
         }
         return page;
     }
+    public List<Good> getHotGoods(int num) {
+        return goodMapper.getHotGoods(num);
+    }
 }

@@ -6,6 +6,8 @@ import com.rabbiter.em.common.Result;
 import com.rabbiter.em.entity.AuthorityType;
 import com.rabbiter.em.entity.Good;
 import com.rabbiter.em.entity.Standard;
+import com.rabbiter.em.mapper.GoodMapper;
+import com.rabbiter.em.service.CollaborativeFilteringService;
 import com.rabbiter.em.service.GoodService;
 import com.rabbiter.em.service.StandardService;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,13 @@ public class GoodController {
 
     @Resource
     private StandardService standardService;
+    private final GoodMapper goodMapper;
+    private final CollaborativeFilteringService collaborativeFilteringService;
+
+    public GoodController(GoodMapper goodMapper, CollaborativeFilteringService collaborativeFilteringService) {
+        this.goodMapper = goodMapper;
+        this.collaborativeFilteringService = collaborativeFilteringService;
+    }
 
 
 
@@ -119,4 +128,15 @@ public class GoodController {
         return Result.success(goodService.findFullPage(pageNum,pageSize,searchText,categoryId));
     }
 
+    @GetMapping("/hot")
+    public Result getHotGoods(@RequestParam int num) {
+        return Result.success(goodService.getHotGoods(num));
+    }
+
+    @GetMapping("/collaborative-recommend")
+    public Result getCollaborativeRecommendGoods(@RequestParam Long userId, @RequestParam int num) {
+        List<Long> recommendedGoodIds = collaborativeFilteringService.recommendGoods(userId, num);
+        List<Good> recommendedGoods = goodMapper.selectBatchIds(recommendedGoodIds);
+        return Result.success(recommendedGoods);
+    }
 }
