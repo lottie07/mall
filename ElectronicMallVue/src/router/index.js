@@ -12,10 +12,10 @@ const routes = [
     name: 'front',
     redirect: "/topview",
     component: () => import('../views/front/Front.vue'),
-    meta: {title:'数智化商城', path: '在线商城', requireAuth: false},
+    meta: {title:'数智化商城', path: '数智化商城', requireAuth: false},
     children: [
       {path: 'person', name: 'person', meta: {title:'个人信息',requireLogin: true}, component: () => import('../views/Person.vue'),},
-      {path: 'topview', name: 'topview', meta: {title:'在线商城'}, component: () => import('../views/front/TopView.vue'),},
+      {path: 'topview', name: 'topview', meta: {title:'数智化商城'}, component: () => import('../views/front/TopView.vue'),},
       {path: 'cart', name: 'cart', meta: {title:'我的购物车',requireLogin: true}, component: () => import('../views/front/good/Cart.vue'),},
       {path: 'goodList', name: 'goodList', meta: {title:'商品界面'}, component: () => import('../views/front/good/GoodList.vue'),},
       {path: 'malltour', name: 'malltour', meta: {title:'商城导览'}, component: () => import('../views/front/mall/Tour.vue'),},    

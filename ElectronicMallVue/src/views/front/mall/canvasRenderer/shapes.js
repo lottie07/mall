@@ -70,5 +70,26 @@ export const drawShapes = {
     ctx.strokeStyle = 'black'; // 设置边框颜色
     ctx.lineWidth = 1;
     ctx.stroke();
+  },
+  trapezoid(ctx, shop, gridSize) {
+    const x = shop.x * gridSize;
+    const y = shop.y * gridSize;
+    const widthTop = shop.width * gridSize;
+    const widthBottom = (shop.width + 2) * gridSize;  // 假设下底比上底宽 2 个网格单位，可调整
+    const height = shop.height * gridSize;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + widthTop, y);
+    ctx.lineTo(x + widthBottom / 2, y + height);
+    ctx.lineTo(x + (widthBottom - widthTop) / 2, y + height);
+    ctx.closePath();
+
+    ctx.fillStyle = '#66ccff'; // 设置填充颜色
+    ctx.fill();
+
+    ctx.strokeStyle = 'black'; // 设置边框颜色
+    ctx.lineWidth = 1;
+    ctx.stroke();
   }
 };
