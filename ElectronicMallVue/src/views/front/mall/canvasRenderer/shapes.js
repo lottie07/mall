@@ -51,5 +51,24 @@ export const drawShapes = {
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
     ctx.strokeRect(x, y, w, h);
+  },
+  triangle(ctx, shop, gridSize) {
+    const x = shop.x * gridSize;
+    const y = shop.y * gridSize;
+    const width = shop.width * gridSize;
+    const height = shop.height * gridSize;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + width, y);
+    ctx.lineTo(x + width / 2, y + height);
+    ctx.closePath();
+
+    ctx.fillStyle = '#999'; // 设置填充颜色
+    ctx.fill();
+
+    ctx.strokeStyle = 'black'; // 设置边框颜色
+    ctx.lineWidth = 1;
+    ctx.stroke();
   }
 };

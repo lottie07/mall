@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="3">
         <div style="font-size: 20px; font-weight: bold; text-align: center">
-          <a href="/"><i class="el-icon-a-011"></i> 在线商城</a>
+          <a href="/"><i class="el-icon-a-011"></i> 数智化商城</a>
         </div>
       </el-col>
       <el-col :span="17">

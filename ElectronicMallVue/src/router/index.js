@@ -12,7 +12,7 @@ const routes = [
     name: 'front',
     redirect: "/topview",
     component: () => import('../views/front/Front.vue'),
-    meta: {title:'在线商城', path: '在线商城', requireAuth: false},
+    meta: {title:'数智化商城', path: '在线商城', requireAuth: false},
     children: [
       {path: 'person', name: 'person', meta: {title:'个人信息',requireLogin: true}, component: () => import('../views/Person.vue'),},
       {path: 'topview', name: 'topview', meta: {title:'在线商城'}, component: () => import('../views/front/TopView.vue'),},

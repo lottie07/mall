@@ -10,7 +10,7 @@
       <router-link to="/manage/home">
         <img src="../resource/logo.png" style="width: 32px;position: relative; top: 7px;right: 6px;">
       </router-link>
-      <span slot="title" style="color: aliceblue;font-size: 20px" v-show="!isCollapse">在线商城后台管理</span>
+      <span slot="title" style="color: aliceblue;font-size: 20px" v-show="!isCollapse">数智化商城后台管理</span>
     </div>
     <el-menu-item index="/manage/home">
       <i class="el-icon-a-011" style="font-size: 22px;color: white;"></i><span slot="title">主页</span>
