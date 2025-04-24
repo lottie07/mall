@@ -32,10 +32,10 @@
         <el-menu-item index="/manage/avatar" v-if="menuFlags.avatarMenu">头像管理</el-menu-item>
       </el-submenu>
       <el-submenu v-if="GoodGroup" index="good">
-        <template slot="title"><i class="el-icon-a-041" style="font-size: 22px;color: white;"></i>商品</template>
-        <el-menu-item index="/manage/category" v-if="menuFlags.categoryMenu">商品分类管理</el-menu-item>
+        <template slot="title"><i class="el-icon-a-041" style="font-size: 22px;color: white;"></i>店铺</template>
+        <el-menu-item index="/manage/category" v-if="menuFlags.categoryMenu">店铺分类管理</el-menu-item>
         <el-menu-item index="/manage/carousel" v-if="menuFlags.carouselMenu">轮播图管理</el-menu-item>
-        <el-menu-item index="/manage/good" v-if="menuFlags.goodMenu">商品管理</el-menu-item>
+        <el-menu-item index="/manage/good" v-if="menuFlags.goodMenu">店铺管理</el-menu-item>
         <el-menu-item index="/manage/order" v-if="menuFlags.orderMenu">订单管理</el-menu-item>
       </el-submenu>
       <el-submenu v-if="incomeGroup" index="income">

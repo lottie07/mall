@@ -5,7 +5,7 @@
       <div style="margin: 20px auto">
         <h2>
           <i class="el-icon-a-041"></i>
-          商品分类
+          店铺分类
         </h2>
         <!--      类别菜单-->
         <el-row :gutter="20" style="font-size: 18px;">

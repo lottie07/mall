@@ -255,7 +255,7 @@ export default {
       ) {
         this.$message({
           type: "error",
-          message: "请选择商品分类",
+          message: "请选择分类",
           showClose: true,
         });
         return false;
