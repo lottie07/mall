@@ -61,7 +61,7 @@
             <!--推荐商品-->
             <div style="margin-top: 30px">
                 <i class="el-icon-a-02" style="color: #ff5e5e;font-size: 28px; font-weight: 600;">
-                    推荐商品
+                    推荐店铺-团购
                 </i>
             </div>
 

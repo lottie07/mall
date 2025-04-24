@@ -16,7 +16,7 @@
           <el-menu-item index="/" class="menu-item">商城首页</el-menu-item>
           
           <el-menu-item index="/goodList" class="menu-item"
-            >商品分类</el-menu-item
+            >店铺分类</el-menu-item
           >
 
           <el-menu-item index="/malltour" class="menu-item"
