@@ -1,5 +1,6 @@
 package com.rabbiter.em.controller;
 
+import com.rabbiter.em.common.Result;
 import com.rabbiter.em.entity.Shops;
 import com.rabbiter.em.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping("/shops")
-    public List<Shops> getAllShops() {
-        return shopService.getAllShops();
+    public Result getAllShops() {
+        List<Shops> shops = shopService.getAllShops();
+        return Result.success(shops); // 使用统一响应格式
     }
 }
