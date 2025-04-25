@@ -218,7 +218,7 @@ export default {
       if (this.good.name == undefined || this.good.name.trim() == "") {
         this.$message({
           type: "error",
-          message: "请输入商品名称",
+          message: "请输入店铺名称",
           showClose: true,
         });
         return false;
@@ -229,7 +229,7 @@ export default {
       ) {
         this.$message({
           type: "error",
-          message: "请输入商品描述",
+          message: "请输入店铺描述",
           showClose: true,
         });
         return false;
@@ -245,7 +245,7 @@ export default {
       if (this.good.discount == undefined || this.good.discount === "") {
         this.$message({
           type: "error",
-          message: "请输入商品折扣",
+          message: "请输入折扣",
           showClose: true,
         });
         return false;

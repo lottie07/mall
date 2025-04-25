@@ -1,4 +1,5 @@
 export const drawShapes = {
+  // 保持原有的 rect、pathMarker、invertedHouse、elevator、triangle 方法不变
   rect(ctx, shop, gridSize) {
     const x = shop.x * gridSize;
     const y = shop.y * gridSize;
@@ -64,10 +65,10 @@ export const drawShapes = {
     ctx.lineTo(x + width / 2, y + height);
     ctx.closePath();
 
-    ctx.fillStyle = '#999'; // 设置填充颜色
+    ctx.fillStyle = '#999'; 
     ctx.fill();
 
-    ctx.strokeStyle = 'black'; // 设置边框颜色
+    ctx.strokeStyle = 'black'; 
     ctx.lineWidth = 1;
     ctx.stroke();
   },
@@ -75,21 +76,46 @@ export const drawShapes = {
     const x = shop.x * gridSize;
     const y = shop.y * gridSize;
     const widthTop = shop.width * gridSize;
-    const widthBottom = (shop.width + 2) * gridSize;  // 假设下底比上底宽 2 个网格单位，可调整
+    const widthBottom = (shop.width + 2) * gridSize;  
     const height = shop.height * gridSize;
 
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + widthTop, y);
-    ctx.lineTo(x + widthBottom / 2, y + height);
-    ctx.lineTo(x + (widthBottom - widthTop) / 2, y + height);
+    ctx.moveTo(x, y); 
+    ctx.lineTo(x + widthTop, y); 
+    ctx.lineTo(x + widthBottom, y + height); 
+    ctx.lineTo(x, y + height); 
     ctx.closePath();
 
-    ctx.fillStyle = '#66ccff'; // 设置填充颜色
+    ctx.fillStyle = '#999'; 
     ctx.fill();
 
-    ctx.strokeStyle = 'black'; // 设置边框颜色
+    ctx.strokeStyle = 'black'; 
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  },
+  rightTrapezoid(ctx, shop, gridSize) {
+    const x = shop.x * gridSize;
+    const y = shop.y * gridSize;
+    const widthTop = shop.width * gridSize;
+    const widthBottom = (shop.width + 2) * gridSize;
+    const height = shop.height * gridSize;
+
+    ctx.beginPath();
+    // 左上角顶点
+    ctx.moveTo(x, y);
+    // 右上角顶点
+    ctx.lineTo(x + widthTop, y);
+    // 右下角顶点
+    ctx.lineTo(x + widthTop, y + height);
+    // 左下角顶点
+    ctx.lineTo(x - widthBottom/3 , y + height);
+    ctx.closePath();
+
+    ctx.fillStyle = '#999';
+    ctx.fill();
+
+    ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
     ctx.stroke();
   }
-};
+};  
