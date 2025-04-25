@@ -10,7 +10,7 @@ const routes = [
   {
     path: '/',
     name: 'front',
-    redirect: "/topview",
+    redirect: "/malltour",
     component: () => import('../views/front/Front.vue'),
     meta: {title:'数智化商城', path: '数智化商城', requireAuth: false},
     children: [

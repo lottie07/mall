@@ -13,15 +13,16 @@
           mode="horizontal"
           router
         >
+          <el-menu-item index="/malltour" class="menu-item"
+            >商城导览</el-menu-item
+          >
           <el-menu-item index="/" class="menu-item">商城首页</el-menu-item>
           
           <el-menu-item index="/goodList" class="menu-item"
             >店铺分类</el-menu-item
           >
 
-          <el-menu-item index="/malltour" class="menu-item"
-            >商城导览</el-menu-item
-          >
+          
           <el-menu-item index="/cart" class="menu-item"
             >我的购物车</el-menu-item
           >

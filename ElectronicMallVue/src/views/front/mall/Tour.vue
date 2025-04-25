@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <div class="floor-info">当前楼层: {{ currentFloor }}</div>
-    <canvas 
-      id="floorCanvas"
-      :width="canvasWidth"
-      :height="canvasHeight"
-      @mousemove="handleMouseMove"
-      @click="handleClick"
-    ></canvas>
-    <div 
-      id="infoBox"
-      :style="infoBoxStyle"
-    >{{ hoverInfo }}</div>
+  <div class="tour-container">
+    <div>
+      <div class="floor-info">当前楼层: {{ currentFloor }}</div>
+      <canvas 
+        id="floorCanvas"
+        :width="canvasWidth"
+        :height="canvasHeight"
+        @mousemove="handleMouseMove"
+        @click="handleClick"
+      ></canvas>
+      <div 
+        id="infoBox"
+        :style="infoBoxStyle"
+      >{{ hoverInfo }}</div>
+    </div>
   </div>
 </template>
 
@@ -267,25 +269,34 @@ export default {
   }
 };
 </script>
-
 <style scoped>
+.tour-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  margin-top: 20px;
+}
+
 .floor-info {
   text-align: center;
   font-size: 18px;
   margin: 10px 0;
+  color: #333;
 }
 
 canvas {
   border: 1px solid #ccc;
-  background: #fff;
+  background: #f5f5f5; /* 更改地图背景颜色 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
 
 #infoBox {
   position: fixed;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid #333;
   padding: 8px;
   pointer-events: none;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  color: #333; /* 更改信息框文字颜色 */
 }
-</style>    
+</style>
