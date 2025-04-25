@@ -1,6 +1,8 @@
 package com.rabbiter.em.controller;
 
+import com.rabbiter.em.annotation.Authority;
 import com.rabbiter.em.common.Result;
+import com.rabbiter.em.entity.AuthorityType;
 import com.rabbiter.em.entity.Shops;
 import com.rabbiter.em.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,10 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
 
+    @Authority(AuthorityType.noRequire)
     @GetMapping("/shops")
     public Result getAllShops() {
         List<Shops> shops = shopService.getAllShops();
-        return Result.success(shops); // 使用统一响应格式
+        return Result.success(shops);
     }
 }
