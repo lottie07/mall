@@ -34,7 +34,12 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = request.getHeader("token");
+        String requestURI = request.getRequestURI();
+
         //如果不是映射到方法，直接通过
+        if ("/api/shops".equals(requestURI)) {
+            return true;
+        }
         if(!(handler instanceof HandlerMethod)){
             return true;
         }
