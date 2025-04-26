@@ -226,11 +226,11 @@ export default {
 
     handleClick(event) {
       const rect = this.$el.getBoundingClientRect();
-      const gridX = Math.floor((event.clientX - rect.left) / this.gridSize);
-      const gridY = Math.floor((event.clientY - rect.top) / this.gridSize);
+      const gridX = Math.floor((event.clientX - rect.left) / this.gridSize)-2;
+      const gridY = Math.floor((event.clientY - rect.top) / this.gridSize)-2;
 
       if (event.shiftKey) { // 按住Shift点击设置起点
-        this.pathStart = { x: gridX, y: gridY -2};
+        this.pathStart = { x: gridX, y: gridY };
         console.log('设置起点:', this.pathStart);
         this.renderer.drawColoredGrid(this.pathStart.x, this.pathStart.y, 'blue');
       } else if (event.ctrlKey) { // 按住Ctrl点击设置终点
