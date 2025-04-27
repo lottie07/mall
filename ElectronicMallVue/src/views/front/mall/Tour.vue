@@ -20,7 +20,6 @@
 <script>
 import { CanvasRenderer } from './canvasRenderer';
 import API from '@/utils/request';
-import { aStar } from './Astar.js'
 
 export default {
   data() {
@@ -248,17 +247,8 @@ export default {
       if (event.shiftKey) { 
         this.pathEnd = { x: gridX, y: gridY };
         console.log('A*算法终点:', this.pathEnd);
-
-        if (this.pathEnd) {
-          const width = Math.floor(this.canvasWidth / this.gridSize);
-          const height = Math.floor(this.canvasHeight / this.gridSize);
-          const path = aStar(this.pathStart, this.pathEnd, this.currentFloorObstacles, width, height);
-          if (path.length > 0) {
-            this.followPath(path);
-          } else {
-            console.log('未找到路径');
-          }
-        }
+        this.renderer.updateAstarPath(this.pathStart, this.pathEnd);
+          
       } 
      
       
@@ -318,4 +308,4 @@ canvas {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   color: #333; /* 更改信息框文字颜色 */
 }
-</style>
+</style>./canvasRenderer/Astar.js
