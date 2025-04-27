@@ -20,6 +20,7 @@
 <script>
 import { CanvasRenderer } from './canvasRenderer';
 import API from '@/utils/request';
+import { aStar } from './Astar.js'
 
 export default {
   data() {
@@ -86,6 +87,7 @@ export default {
     this.canvas = document.getElementById('floorCanvas');
     this.infoBox = document.getElementById('infoBox');
     window.addEventListener('keydown', this.handleKeyPress);
+    this.pathStart = { x: this.blockX, y: this.blockY };
     
   },
 
@@ -106,7 +108,9 @@ export default {
           floor: Number(shop.floor) || 1,
           shopName: shop.shopName || '123',
           shape: shop.shape || 'rect',
-          info: shop.shopName || '未知店铺' 
+          info: shop.shopName || '未知店铺' ,
+          centerX: shop.x + shop.width/2,
+          centerY: shop.y + shop.height/2
         }));
         console.log('Fetched shops:', this.allShops); 
 
@@ -164,7 +168,13 @@ export default {
       if (this.isValidPosition(newPos)) {
         this.blockX = newPos.x;
         this.blockY = newPos.y;
+        this.pathStart = { x: this.blockX, y: this.blockY };
+        this.renderer.drawColoredGrid(this.pathStart.x, this.pathStart.y, 'blue');
+        if (this.pathEnd) {
+          this.renderer.updatePath(this.pathStart, this.pathEnd);
+        }
       }
+
 
       // 新增空格键自动寻路
       if (e.key === ' ') {
@@ -228,21 +238,30 @@ export default {
       const rect = this.$el.getBoundingClientRect();
       const gridX = Math.floor((event.clientX - rect.left) / this.gridSize)-2;
       const gridY = Math.floor((event.clientY - rect.top) / this.gridSize)-2;
-
-      if (event.shiftKey) { // 按住Shift点击设置起点
-        this.pathStart = { x: gridX, y: gridY };
-        console.log('设置起点:', this.pathStart);
-        this.renderer.drawColoredGrid(this.pathStart.x, this.pathStart.y, 'blue');
-      } else if (event.ctrlKey) { // 按住Ctrl点击设置终点
+      if (event.ctrlKey) { 
         this.pathEnd = { x: gridX, y: gridY };
-        console.log('设置终点:', this.pathEnd.y);
-        this.renderer.drawColoredGrid(this.pathEnd.x, this.pathEnd.y, 'red');
-      }
-      
-      if (this.pathStart && this.pathEnd) {
+        console.log('设置终点:', this.pathEnd);
+        this.renderer.drawColoredGrid(this.pathEnd.x, this.pathEnd.y, 'blue');
         this.renderer.updatePath(this.pathStart, this.pathEnd);
       }
 
+      if (event.shiftKey) { 
+        this.pathEnd = { x: gridX, y: gridY };
+        console.log('A*算法终点:', this.pathEnd);
+
+        if (this.pathEnd) {
+          const width = Math.floor(this.canvasWidth / this.gridSize);
+          const height = Math.floor(this.canvasHeight / this.gridSize);
+          const path = aStar(this.pathStart, this.pathEnd, this.currentFloorObstacles, width, height);
+          if (path.length > 0) {
+            this.followPath(path);
+          } else {
+            console.log('未找到路径');
+          }
+        }
+      } 
+     
+      
       if (this.hoverInfo) {
         alert(this.hoverInfo);
       }

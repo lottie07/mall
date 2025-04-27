@@ -1,6 +1,6 @@
 const colorList = [
-  '#63b2ee', '#76da91', '#f8cb7f', '#f89588', '#7cd6cf', 
-  '#9192ab', '#7898e1', '#efa666', '#eddd86', '#9987ce'
+    '#95cdf2',  '#a1e5a8',  '#fbd6a4',  '#fbb09e',  '#a9e2de',
+    '#b3b4c2',  '#a2b1e6',  '#f3bb8c',  '#f4e5a1',  '#b8a7d8'
 ];
 
 export const drawShapes = {
