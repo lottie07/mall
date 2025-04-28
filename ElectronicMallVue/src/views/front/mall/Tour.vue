@@ -1,7 +1,19 @@
 <template>
   <div class="tour-container">
-    <div>
+    <div class="canvas-header" :style="{ width: canvasWidth + 'px' }">
       <div class="floor-info">当前楼层: {{ currentFloor }}</div>
+      <div class="map-controls">
+        <el-button 
+          class="import-btn"
+          type="primary" 
+          @click="showImportDialog = true">
+          导入
+        </el-button>
+      </div>
+    </div>
+  
+
+    <div class="floor-info-container">
       <canvas 
         id="floorCanvas"
         :width="canvasWidth"
@@ -9,6 +21,37 @@
         @mousemove="handleMouseMove"
         @click="handleClick"
       ></canvas>
+      
+      <el-dialog 
+        title="地图数据导入"
+        :visible.sync="showImportDialog"
+        width="30%"
+        @close="showImportDialog = false"
+      >
+        <el-upload
+          class="upload-demo"
+          action="/api/map/import"
+          :show-file-list="false"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">
+            支持JSON格式地图数据文件，最大50MB
+          </div>
+        </el-upload>
+        
+        <div class="import-options">
+          <el-input
+            placeholder="或输入数据API地址"
+            style="margin-top: 15px;"
+          >
+            <el-button 
+              slot="append" 
+              icon="el-icon-link"
+            ></el-button>
+          </el-input>
+        </div>
+      </el-dialog>
+
       <div 
         id="infoBox"
         :style="infoBoxStyle"
@@ -24,6 +67,7 @@ import API from '@/utils/request';
 export default {
   data() {
     return {
+      showImportDialog: false,
       canvasWidth: 1300,
       canvasHeight: 560,
       gridSize: 20,
@@ -283,7 +327,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center; 
-  margin-top: 20px;
+  align-items: center;
+  margin-top: 10px;
+}
+.canvas-header {
+  position: relative;
+  height: 40px; /* 根据实际情况调整 */
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .floor-info {
@@ -292,7 +344,9 @@ export default {
   margin: 10px 0;
   color: #333;
 }
-
+.map-controls {
+  margin-left: auto; /* 将按钮推到右侧 */
+}
 canvas {
   border: 1px solid #ccc;
   background: #f5f5f5; /* 更改地图背景颜色 */
@@ -307,5 +361,20 @@ canvas {
   pointer-events: none;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   color: #333; /* 更改信息框文字颜色 */
+}
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.floor-info {
+  margin-right: 10px; /* 可根据需要调整间距 */
+}
+.map-controls {
+  display: flex;
+  align-items: center;
+}
+.import-btn {
+  margin-left: 10px; /* 可根据需要调整按钮与楼层信息的间距 */
 }
 </style>./canvasRenderer/Astar.js
