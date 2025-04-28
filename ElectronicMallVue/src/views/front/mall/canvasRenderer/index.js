@@ -20,6 +20,18 @@ export class CanvasRenderer {
       Math.floor(vm.canvasWidth / vm.gridSize),
       Math.floor(vm.canvasHeight / vm.gridSize)
     );
+    vm.currentFloorWalls = [
+      { startX: 0, startY: 0, endX: 23, endY: 0 },
+      { startX: 23, startY: 0, endX: 24, endY: 1 },
+      { startX: 24, startY: 1, endX: 65, endY: 1 },      
+      { startX: 65, startY: 1, endX: 65, endY: 26 },  
+      { startX: 65, startY: 26, endX: 32, endY: 26 },
+      { startX: 32, startY: 26, endX: 32, endY: 18 },
+      { startX: 32, startY: 18, endX: 17, endY: 18 },      
+      { startX: 17, startY: 18, endX: 14, endY: 15 },         
+      { startX: 14, startY: 15, endX: 0, endY: 15 },        
+      { startX: 0, startY: 15, endX: 0, endY: 0 },
+    ];
   }
 
   async init() {    
@@ -332,6 +344,7 @@ _debugPrintPath(prev, startKey, endKey) {
     
     this.drawGrid();
     this.drawShops();
+    this.drawWalls() ;
     this.drawObstacles();
     this.drawPlayer();
     this.drawPath();
@@ -347,31 +360,30 @@ _debugPrintPath(prev, startKey, endKey) {
     this.animationFrame = requestAnimationFrame(() => this.drawAllElements());
   }
 
-  // 在CanvasRenderer类中修改drawShops方法
-drawShops() {
-  const { currentFloorShops: shops, gridSize } = this.vm;
-  const { ctx } = this;
-  
-  shops.forEach(shop => {
-    drawShapes[shop.shape](ctx, shop, gridSize);
+  drawShops() {
+    const { currentFloorShops: shops, gridSize } = this.vm;
+    const { ctx } = this;
     
-    ctx.save();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = `${Math.round(gridSize/2)}px Arial`; 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    
-    const textX = (shop.x + shop.width/2) * gridSize;
-    const textY = (shop.y + shop.height/2) * gridSize;
-    
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
-    ctx.strokeText(shop.shopName, textX, textY);
-    
-    ctx.fillText(shop.shopName, textX, textY);
-    ctx.restore(); 
-  });
-}
+    shops.forEach(shop => {
+      drawShapes[shop.shape](ctx, shop, gridSize);
+      
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `${Math.round(gridSize/2)}px Arial`; 
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      
+      const textX = (shop.x + shop.width/2) * gridSize;
+      const textY = (shop.y + shop.height/2) * gridSize;
+      
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.strokeText(shop.shopName, textX, textY);
+      
+      ctx.fillText(shop.shopName, textX, textY);
+      ctx.restore(); 
+    });
+  }
 
   drawObstacles() {
     const { currentFloorObstacles: obstacles, gridSize, treeImage } = this.vm;
@@ -381,6 +393,26 @@ drawShops() {
       }
     });
   }
+  drawWalls() {
+    const { ctx, vm: { gridSize, currentFloorWalls } } = this;    
+    ctx.fillStyle = '#666666'; 
+    
+    ctx.strokeStyle = '#444444';
+    ctx.lineWidth = 10;
+
+    currentFloorWalls.forEach(wall => {
+      const startX = wall.startX * gridSize;
+      const startY = wall.startY * gridSize;
+      const endX = wall.endX * gridSize;
+      const endY = wall.endY * gridSize;
+
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+    });
+  }
+  
   drawNetwork() {
     const { ctx, vm: { gridSize } } = this;
     
