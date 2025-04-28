@@ -1,6 +1,7 @@
 import { drawShapes } from './shapes';
 import { handleCollision } from './utils';
 import { GraphNetwork } from './pathfinder';
+import { aStar } from './Astar';
 
 export class CanvasRenderer {
   constructor(vm, canvasId) {
@@ -14,6 +15,11 @@ export class CanvasRenderer {
     this.gridSize = vm.gridSize;
     this.gridWidth = Math.floor(vm.canvasWidth / this.gridSize);
     this.gridHeight = Math.floor(vm.canvasHeight / this.gridSize);
+
+    this.pathfinder = new aStar(
+      Math.floor(vm.canvasWidth / vm.gridSize),
+      Math.floor(vm.canvasHeight / vm.gridSize)
+    );
   }
 
   async init() {    
@@ -21,6 +27,10 @@ export class CanvasRenderer {
     this.drawAllElements(); 
     await this.vm.fetchShops();
     this._buildShopNetwork();
+  }
+  updateAstarPath(start, end) {
+    this.pathfinder.setObstacles(this.vm.currentFloorObstacles);
+    this.currentPath = this.pathfinder.findPath(start, end) || [];
   }
   _buildShopNetwork() {
     console.log('this.vm.currentFloorShops:', this.vm.currentFloorShops);
@@ -273,7 +283,7 @@ _debugPrintPath(prev, startKey, endKey) {
 
     ctx.stroke();
   }
-  
+
   drawColoredGrid(x, y, color) {
     const gridSize = this.vm.gridSize;
     const startX = x * gridSize;
@@ -337,10 +347,31 @@ _debugPrintPath(prev, startKey, endKey) {
     this.animationFrame = requestAnimationFrame(() => this.drawAllElements());
   }
 
-  drawShops() {
-    const { currentFloorShops: shops, gridSize } = this.vm;
-    shops.forEach(shop => drawShapes[shop.shape](this.ctx, shop, gridSize));
-  }
+  // 在CanvasRenderer类中修改drawShops方法
+drawShops() {
+  const { currentFloorShops: shops, gridSize } = this.vm;
+  const { ctx } = this;
+  
+  shops.forEach(shop => {
+    drawShapes[shop.shape](ctx, shop, gridSize);
+    
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `${Math.round(gridSize/2)}px Arial`; 
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    
+    const textX = (shop.x + shop.width/2) * gridSize;
+    const textY = (shop.y + shop.height/2) * gridSize;
+    
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.strokeText(shop.shopName, textX, textY);
+    
+    ctx.fillText(shop.shopName, textX, textY);
+    ctx.restore(); 
+  });
+}
 
   drawObstacles() {
     const { currentFloorObstacles: obstacles, gridSize, treeImage } = this.vm;
