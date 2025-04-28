@@ -11,7 +11,6 @@
         </el-button>
       </div>
     </div>
-  
 
     <div class="floor-info-container">
       <canvas 
@@ -21,36 +20,11 @@
         @mousemove="handleMouseMove"
         @click="handleClick"
       ></canvas>
-      
-      <el-dialog 
-        title="地图数据导入"
+
+      <map-import-dialog
         :visible.sync="showImportDialog"
-        width="30%"
-        @close="showImportDialog = false"
-      >
-        <el-upload
-          class="upload-demo"
-          action="/api/map/import"
-          :show-file-list="false"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">
-            支持JSON格式地图数据文件，最大50MB
-          </div>
-        </el-upload>
-        
-        <div class="import-options">
-          <el-input
-            placeholder="或输入数据API地址"
-            style="margin-top: 15px;"
-          >
-            <el-button 
-              slot="append" 
-              icon="el-icon-link"
-            ></el-button>
-          </el-input>
-        </div>
-      </el-dialog>
+        @import-from-api="handleApiImport"
+      />
 
       <div 
         id="infoBox"
@@ -63,8 +37,12 @@
 <script>
 import { CanvasRenderer } from './canvasRenderer';
 import API from '@/utils/request';
+import MapImportDialog from './MapImportDialog.vue'
 
 export default {
+  components: {
+    MapImportDialog
+  },
   data() {
     return {
       showImportDialog: false,
@@ -326,7 +304,6 @@ export default {
 .tour-container {
   display: flex;
   flex-direction: column;
-  align-items: center; 
   align-items: center;
   margin-top: 10px;
 }
@@ -342,6 +319,7 @@ export default {
   text-align: center;
   font-size: 18px;
   margin: 10px 0;
+  align-items: center; 
   color: #333;
 }
 .map-controls {
