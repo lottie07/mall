@@ -18,63 +18,85 @@
           支持JPG/PNG格式图片，最大5MB
         </div>
       </el-upload>
-  
       <div class="editor-container" v-if="imageUrl">
-        <div 
+        <div
           class="image-container"
           ref="imageContainer"
           @mousemove="handleDrag"
           @mouseup="stopDrag"
           @mouseleave="stopDrag"
         >
-          <img 
-            :src="imageUrl" 
+          <img
+            :src="imageUrl"
             alt="上传的图片"
             ref="image"
-            @load="initPoints"
+            @load="initFirstShop"
           >
+          <!-- 遍历所有店铺 -->
           <div
-            v-for="(point, index) in points"
-            :key="index"
-            class="control-point"
-            :style="{
-              left: point.x + 'px',
-              top: point.y + 'px'
-            }"
-            @mousedown="startDrag(index, $event)"
-          ></div>
-          <svg class="polygon" v-if="points.length > 1">
-            <polygon 
-              :points="polygonPoints"
-              fill="rgba(64, 158, 255, 0.3)"
-              stroke="#409eff"
-            />
-          </svg>
-        </div>
-  
-        <div class="property-sidebar">
-            <el-form label-position="top">
-              <el-form-item label="店铺X坐标">
-                <el-input v-model.number="shopX"></el-input>
-              </el-form-item>
-              <el-form-item label="店铺Y坐标">
-                <el-input v-model.number="shopY"></el-input>
-              </el-form-item>
-              <el-form-item label="店铺长度">
-                <el-input v-model.number="shopWidth"></el-input>
-              </el-form-item>
-              <el-form-item label="店铺宽度">
-                <el-input v-model.number="shopHeight"></el-input>
-              </el-form-item>
-              <el-form-item label="店铺名称">
-                <el-input v-model="shopName"></el-input>
-              </el-form-item>
-              <el-form-item label="所在楼层">
-                <el-input v-model="shopFloor"></el-input>
-              </el-form-item>
-            </el-form>
-            <el-button type="primary" class="confirm-btn">确认</el-button>
+            v-for="(shop, shopIndex) in shops"
+            :key="'shop-' + shopIndex"
+            class="shop-container"
+          >
+            <!-- 控制点 -->
+            <div
+              v-for="(point, pointIndex) in shop.points"
+              :key="'point-' + shopIndex + '-' + pointIndex"
+              class="control-point"
+              :style="{
+                left: point.x + 'px',
+                top: point.y + 'px',
+                backgroundColor: colors[shopIndex % colors.length]
+              }"
+              @mousedown="startDrag(shopIndex, pointIndex, $event)"
+            ></div>
+            <!-- 多边形 -->
+            <svg class="polygon" v-if="shop.points.length > 1">
+              <polygon
+                :points="getShopPolygon(shopIndex)"
+                :fill="`rgba(${hexToRgb(colors[shopIndex % colors.length])}, 0.3)`"
+                :stroke="colors[shopIndex % colors.length]"
+              />
+            </svg>
           </div>
+        </div>
+        <div class="property-sidebar">
+          <div class="tabs-container">
+            <el-tabs v-model="activeShop" type="card">
+              <el-tab-pane
+                v-for="(shop, index) in shops"
+                :key="index"
+                :label="'店铺' + (index + 1)"
+                :name="index.toString()"
+              >
+                <el-form label-position="top">
+                  <el-form-item :label="'店铺' + (index + 1) + 'X坐标'">
+                    <el-input v-model.number="shop.shopX"></el-input>
+                  </el-form-item>
+                  <el-form-item :label="'店铺' + (index + 1) + 'Y坐标'">
+                    <el-input v-model.number="shop.shopY"></el-input>
+                  </el-form-item>
+                  <el-form-item :label="'店铺' + (index + 1) + '长度'">
+                    <el-input v-model.number="shop.shopWidth"></el-input>
+                  </el-form-item>
+                  <el-form-item :label="'店铺' + (index + 1) + '宽度'">
+                    <el-input v-model.number="shop.shopHeight"></el-input>
+                  </el-form-item>
+                  <el-form-item :label="'店铺' + (index + 1) + '名称'">
+                    <el-input v-model="shop.shopName"></el-input>
+                  </el-form-item>
+                  <el-form-item :label="'店铺' + (index + 1) + '楼层'">
+                    <el-input v-model="shop.shopFloor"></el-input>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+          <div class="button-group">
+            <el-button type="primary" @click="addNewShop">添加店铺</el-button>
+            <el-button type="success" class="confirm-btn" @click="confirmShops">确认</el-button>
+          </div>
+        </div>
       </div>
     </el-dialog>
   </template>
@@ -90,78 +112,95 @@
     data() {
       return {
         imageUrl: '',
-        points: [],
+        shops: [],
+        activeShop: '0',
+        draggingShop: 0,
         draggingIndex: -1,
         containerRect: null,
-        shopX: 0,
-        shopY: 0,
-        shopWidth: 0,
-        shopHeight: 0,
-        shopName: '',
-        shopFloor:1
+        colors: ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C', '#909399']
       }
     },
     computed: {
-    polygonPoints() {
-      return this.points.map(p => `${p.x},${p.y}`).join(' ')
+      currentShop() {
+        return this.shops[parseInt(this.activeShop)] || {}
+      }
     },
-    // 自动计算左上角坐标
-    topLeftPoint() {
-      if(this.points.length === 0) return {x:0, y:0}
-      return this.points.reduce((prev, curr) => {
-        return {
-          x: Math.min(prev.x, curr.x),
-          y: Math.min(prev.y, curr.y)
-        }
-      })
-    }
-  },watch: {
-    topLeftPoint(newVal) {
-      this.shopX = newVal.x
-      this.shopY = newVal.y
+    watch: {
+      currentShop: {
+        handler(newVal) {
+          if (!newVal.points) return
+          const points = newVal.points
+          if (points.length < 1) return
+  
+          newVal.shopX = Math.min(...points.map(p => p.x))
+          newVal.shopY = Math.min(...points.map(p => p.y))
+          newVal.shopWidth = Math.max(...points.map(p => p.x)) - newVal.shopX
+          newVal.shopHeight = Math.max(...points.map(p => p.y)) - newVal.shopY
+        },
+        deep: true
+      }
     },
-    shopX(newVal) {
-      this.updateTopLeftPoint(newVal, 'x')
-    },
-    shopY(newVal) {
-      this.updateTopLeftPoint(newVal, 'y')
-    }
-  },
     methods: {
       handleClose() {
         this.$emit('update:visible', false)
         this.imageUrl = ''
-        this.points = []
+        this.shops = []
       },
-      updateTopLeftPoint(value, axis) {
-        const tlIndex = this.findTopLeftIndex()
-        if(tlIndex >= 0) {
-            const newPoint = {...this.points[tlIndex]}
-            newPoint[axis] = value
-            this.points.splice(tlIndex, 1, newPoint)
-        }
-        },
-        findTopLeftIndex() {
-      if(this.points.length === 0) return -1
-      let minX = Infinity
-      let minY = Infinity
-      let index = 0
-      
-      this.points.forEach((p, i) => {
-        if(p.x < minX || (p.x === minX && p.y < minY)) {
-          minX = p.x
-          minY = p.y
-          index = i
-        }
-      })
-      return index
-    },
   
-      
+      addNewShop() {
+        const basePoints = this.shops[0]?.points || []
+        const newShop = {
+          points: JSON.parse(JSON.stringify(basePoints)),
+          shopX: 0,
+          shopY: 0,
+          shopWidth: 0,
+          shopHeight: 0,
+          shopName: '',
+          shopFloor: 1
+        }
+        this.shops.push(newShop)
+        this.activeShop = (this.shops.length - 1).toString()
+      },
+  
+      getShopPolygon(index) {
+        return this.shops[index].points.map(p => `${p.x},${p.y}`).join(' ')
+      },
+  
+      hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        return result
+         ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+          : '64, 158, 255'
+      },
+  
+      startDrag(shopIndex, pointIndex, e) {
+        this.draggingShop = shopIndex
+        this.draggingIndex = pointIndex
+        e.preventDefault()
+      },
+  
+      handleDrag(e) {
+        if (this.draggingIndex === -1) return
+  
+        const container = this.$refs.imageContainer
+        const rect = container.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+  
+        this.shops[this.draggingShop].points.splice(this.draggingIndex, 1, {
+          x: Math.max(0, Math.min(x, container.clientWidth)),
+          y: Math.max(0, Math.min(y, container.clientHeight))
+        })
+      },
+  
+      stopDrag() {
+        this.draggingIndex = -1
+      },
+  
       handleImageUpload(file) {
         const isImage = file.raw.type.startsWith('image/')
         const isLt5M = file.raw.size / 1024 / 1024 < 5
-        
+  
         if (!isImage) {
           this.$message.error('只能上传图片文件!')
           return false
@@ -170,70 +209,48 @@
           this.$message.error('图片大小不能超过5MB!')
           return false
         }
-        
+  
         this.imageUrl = URL.createObjectURL(file.raw)
         return false
       },
-      
-      initPoints() {
+  
+      initFirstShop() {
         const img = this.$refs.image
         this.containerRect = this.$refs.imageContainer.getBoundingClientRect()
-        
-        // 初始化四个角点
-        this.points = [
-          { x: 10, y: 10 },          // 左上
-          { x: img.width - 10, y: 10 }, // 右上
-          { x: img.width - 10, y: img.height - 10 }, // 右下
-          { x: 10, y: img.height - 10 }  // 左下
+  
+        // 初始化第一个店铺
+        const initialPoints = [
+          { x: 10, y: 10 },
+          { x: img.width - 10, y: 10 },
+          { x: img.width - 10, y: img.height - 10 },
+          { x: 10, y: img.height - 10 }
         ]
+  
+        this.shops = [{
+          points: initialPoints,
+          shopX: 10,
+          shopY: 10,
+          shopWidth: img.width - 20,
+          shopHeight: img.height - 20,
+          shopName: '',
+          shopFloor: 1
+        }]
       },
-      
-      startDrag(index, e) {
-        this.draggingIndex = index
-        e.preventDefault()
-      },
-      
-      handleDrag(e) {
-        if (this.draggingIndex === -1) return
-        
-        const container = this.$refs.imageContainer
-        const rect = container.getBoundingClientRect()
-        const x = e.clientX - rect.left
-        const y = e.clientY - rect.top
-        
-        this.points.splice(this.draggingIndex, 1, {
-          x: Math.max(0, Math.min(x, container.clientWidth)),
-          y: Math.max(0, Math.min(y, container.clientHeight))
-        })
-      },
-      
-      stopDrag() {
-        this.draggingIndex = -1
+      confirmShops() {
+        // 这里可以添加确认后的逻辑，比如提交数据等
+        console.log('确认店铺信息:', this.shops)
       }
     }
   }
   </script>
-  <style scoped>
-  .control-point {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #409eff;
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: move;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  z-index: 2;  
-  }
   
-  .polygon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-   z-index: 1;  
+  <style scoped>
+  .editor-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    height: 80vh;
+    align-items: stretch;
   }
   
   .image-container {
@@ -244,35 +261,54 @@
     align-items: center;
     overflow: hidden;
     position: relative;
-    margin: 0; 
-  }
-  .editor-container {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-    height: 80vh; 
-    align-items: stretch;
+    margin: 0;
+    height: 100%;
   }
   
   .property-sidebar {
     width: 300px;
-    padding: 20px;
-    border-left: 1px solid #ebeef5;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    height: 100%; 
-    overflow: hidden; 
+    border-left: 1px solid #ebeef5;
   }
-  .el-form {
+  
+  .tabs-container {
     flex: 1;
-    overflow-y: auto; 
-    margin-right: -15px; 
-    padding-right: 15px; 
+    overflow-y: auto;
+  }
+  
+  .control-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: move;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+  
+  .polygon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    padding: 20px 0;
+    background: white;
+    border-top: 1px solid #ebeef5;
+    margin-top: auto; /* 固定在底部 */
   }
   
   .confirm-btn {
-    flex-shrink: 0; 
-    margin-top: 20px;
+    flex-shrink: 0;
   }
-  
-  </style>
+  </style>    
