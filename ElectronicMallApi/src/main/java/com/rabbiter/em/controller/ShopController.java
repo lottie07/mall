@@ -6,9 +6,7 @@ import com.rabbiter.em.entity.AuthorityType;
 import com.rabbiter.em.entity.Shops;
 import com.rabbiter.em.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +22,11 @@ public class ShopController {
     public Result getAllShops() {
         List<Shops> shops = shopService.getAllShops();
         return Result.success(shops);
+    }
+    @Authority(AuthorityType.noRequire)
+    @PostMapping("/shops")
+    public Result addShops(@RequestBody List<Shops> shops) {
+        shopService.batchInsertShops(shops);
+        return Result.success();
     }
 }

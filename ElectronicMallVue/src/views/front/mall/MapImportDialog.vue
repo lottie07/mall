@@ -102,6 +102,8 @@
 </template>
 
 <script>
+import API from '@/utils/request';
+import { CanvasRenderer } from './canvasRenderer';
 export default {
     props: {
         visible: {
@@ -141,6 +143,47 @@ export default {
         }
     },
     methods: {
+        confirmShops() {
+        const shopsToSend = this.shops.map(shop => ({
+            floor: String(shop.shopFloor || ''), 
+            shopName: shop.shopName || '',
+            x: Number(shop.shopX) || 0,
+            y: Number(shop.shopY) || 0,
+            width: Math.max(0, Number(shop.shopWidth)) || 0,
+            height: Math.max(0, Number(shop.shopHeight)) || 0,
+            shape: 'rect'
+        }));
+
+        const loading = this.$loading({
+            lock: true,
+            text: '保存中...',
+            spinner: 'el-icon-loading'
+        });
+
+        this.request.post('/api/shops', shopsToSend)
+            .then(response => {
+            loading.close();
+            if (response.code == 200) { 
+                this.$message.success(response.msg || '保存成功');
+                this.handleClose();
+            } else {
+                this.$message.error(response.msg || '保存失败');
+            }
+            })
+            .catch(error => {
+            loading.close();
+            console.error('请求失败:', error);
+            
+            let errorMsg = '请求失败';
+            if (error.response) {
+                errorMsg = `服务器错误: ${error.response.status}`;
+            } else if (error.request) {
+                errorMsg = '网络连接失败';
+            }
+            
+            this.$message.error(errorMsg);
+            });
+        },
         handleClose() {
             this.$emit('update:visible', false);
             this.imageUrl = '';
@@ -236,10 +279,6 @@ export default {
                 shopName: '',
                 shopFloor: 1
             }];
-        },
-        confirmShops() {
-            // 这里可以添加确认后的逻辑，比如提交数据等
-            console.log('确认店铺信息:', this.shops);
         },
         updateShopDataFromPoints(shopIndex) {
             const shop = this.shops[shopIndex];

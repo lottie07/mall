@@ -1,6 +1,7 @@
 package com.rabbiter.em.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 @TableName("shops")
@@ -9,6 +10,7 @@ public class Shops {
     private Integer id;
 
     private String floor;
+    @TableField("shop_name")
     private String shopName;
 
     private Integer x;

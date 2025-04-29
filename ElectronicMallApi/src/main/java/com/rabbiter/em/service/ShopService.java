@@ -22,4 +22,8 @@ public class ShopService {
         return shopMapper.getAllShops();
     }
 
+    public void batchInsertShops(List<Shops> shops) {
+        shopMapper.batchInsert(shops);
+    }
+
 }    
