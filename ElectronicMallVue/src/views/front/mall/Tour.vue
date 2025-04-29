@@ -23,7 +23,6 @@
 
       <map-import-dialog
         :visible.sync="showImportDialog"
-        @import-from-api="handleApiImport"
       />
 
       <div 

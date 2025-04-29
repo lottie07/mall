@@ -92,7 +92,13 @@
         imageUrl: '',
         points: [],
         draggingIndex: -1,
-        containerRect: null
+        containerRect: null,
+        shopX: 0,
+        shopY: 0,
+        shopWidth: 0,
+        shopHeight: 0,
+        shopName: '',
+        shopFloor:1
       }
     },
     computed: {
@@ -110,12 +116,10 @@
       })
     }
   },watch: {
-    // 当锚点变化时更新坐标
     topLeftPoint(newVal) {
       this.shopX = newVal.x
       this.shopY = newVal.y
     },
-    // 当手动修改坐标时更新锚点
     shopX(newVal) {
       this.updateTopLeftPoint(newVal, 'x')
     },
@@ -261,13 +265,13 @@
   }
   .el-form {
     flex: 1;
-    overflow-y: auto; /* 表单区域滚动 */
-    margin-right: -15px; /* 补偿滚动条宽度 */
-    padding-right: 15px; /* 防止内容被滚动条遮挡 */
+    overflow-y: auto; 
+    margin-right: -15px; 
+    padding-right: 15px; 
   }
   
   .confirm-btn {
-    flex-shrink: 0; /* 防止按钮被压缩 */
+    flex-shrink: 0; 
     margin-top: 20px;
   }
   
