@@ -23,6 +23,7 @@
 
       <map-import-dialog
         :visible.sync="showImportDialog"
+        @shops-saved="handleShopsSaved" 
       />
 
       <div 
@@ -138,6 +139,11 @@ export default {
       } catch (error) {
         console.error('数据加载失败:', error);
       }
+    },
+    async handleShopsSaved() {
+      await this.fetchShops();
+      this.renderer.init(); 
+      console.log('地图数据已刷新');
     },
 
     sortShopsByFloor() {
@@ -352,6 +358,6 @@ canvas {
   align-items: center;
 }
 .import-btn {
-  margin-left: 10px; /* 可根据需要调整按钮与楼层信息的间距 */
+  margin-left: 10px; 
 }
-</style>./canvasRenderer/Astar.js
+</style>

@@ -93,8 +93,8 @@
                     </el-tabs>
                 </div>
                 <div class="button-group">
-                    <el-button type="primary" @click="addNewShop">添加店铺</el-button>
-                    <el-button type="success" class="confirm-btn" @click="confirmShops">确认</el-button>
+                    <el-button type="primary" @click="addNewShop">添加</el-button>
+                    <el-button type="success" class="confirm-btn" @click="confirmShops">确认导入</el-button>
                 </div>
             </div>
         </div>
@@ -103,7 +103,6 @@
 
 <script>
 import API from '@/utils/request';
-import { CanvasRenderer } from './canvasRenderer';
 export default {
     props: {
         visible: {
@@ -166,6 +165,8 @@ export default {
             if (response.code == 200) { 
                 this.$message.success(response.msg || '保存成功');
                 this.handleClose();
+                this.$emit('shops-saved'); 
+                console.log("保存成功")
             } else {
                 this.$message.error(response.msg || '保存失败');
             }
