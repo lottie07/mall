@@ -140,4 +140,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
                 .set(Order::getState, "已发货");
         update(orderLambdaUpdateWrapper);
     }
+    public Order selectByid(String orderNo) {
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Order::getOrderNo, orderNo);
+        return getOne(queryWrapper);
+    }
 }

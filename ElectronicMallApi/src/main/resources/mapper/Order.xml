@@ -22,4 +22,7 @@
         WHERE o.id = og.order_id AND o.order_no = #{orderNo} AND og.good_id = good.id
           AND gs.good_id = og.good_id AND gs.`value` = standard
     </select>
+    <select id="selectByOrderNo" resultType="com.rabbiter.em.entity.Order">
+        SELECT * FROM `order` WHERE order_no = #{orderNo}
+    </select>
 </mapper>

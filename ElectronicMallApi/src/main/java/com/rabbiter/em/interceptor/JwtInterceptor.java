@@ -40,6 +40,9 @@ public class JwtInterceptor implements HandlerInterceptor {
         if ("/api/shops".equals(requestURI)) {
             return true;
         }
+        if ("/alipay/pay".equals(requestURI)) {
+            return true;
+        }
         if(!(handler instanceof HandlerMethod)){
             return true;
         }
